@@ -3,33 +3,37 @@ namespace app\controllers;
 use app\core\Application;
 use app\core\Controller;
 use app\core\Request;
+use app\models\UserModel;
 
-class SiteController extends Controller
+class UserController extends Controller
 {
     public function list()
     {
-        $params = [
-            'name' => "Polina"
-        ];
-        return Application::$app->router->renderView('list', $params);
+        $this->setLayout('db');
+        return $this->render('list');
     }
 
     public function usersForm(Request $request)
     {
+        $errors = [];
+        $userModel = new UserModel();
         if ($request->isPost())
         {
-            return "Handling submitted data";
-        }
-        return $this->render('usersForm');
-    }
+            $userModel->loadData($request->getBody());
 
-//    public function handleUser(Request $request)
-//    {
-//        $body = $request->getBody();
-//        echo "<pre>";
-//        var_dump($body);
-//        echo "</pre>";
-//        exit;
-//        return "Handling submitted data";
-//    }
+            var_dump($userModel);
+            if ($userModel->validate() && $userModel->pass())
+            {
+                return 'Success';
+            }
+            return $this->render('usersForm', [
+                'model' => $userModel
+            ]);
+        }
+        $this->setLayout('db');
+        return $this->render('usersForm', [
+            'model' => $userModel
+        ]);
+    }
+    
 }

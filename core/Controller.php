@@ -13,6 +13,5 @@ class Controller
 
     public function setLayout($layout)
     {
-
     }
 }

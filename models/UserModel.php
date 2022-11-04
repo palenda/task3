@@ -16,5 +16,4 @@ class UserModel extends Model
     {
         echo "Creating new user";
     }
-
 }

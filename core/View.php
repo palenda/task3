@@ -4,14 +4,10 @@ namespace app\core;
 
 class View
 {
-    public Response $response;
-    public Request $request;
-
-
-    public function renderView($view, $params = [])
+    public function render($view, $params = [])
     {
         $layoutContent = $this->layoutContent();
-        $viewContent = $this->renderOnlyView($view, $params);
+        $viewContent = $this->renderView($view, $params);
         return str_replace('{{content}}', $viewContent, $layoutContent);
     }
 
@@ -29,7 +25,7 @@ class View
         return ob_get_clean();
     }
 
-    protected function renderOnlyView($view, $params)
+    protected function renderView($view, $params)
     {
         foreach ($params as $key => $value) {
             $$key = $value;

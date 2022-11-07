@@ -12,11 +12,10 @@ class Router
     /**
      * @param Request $request
      */
-    public function __construct(Request $request, Response $response, View $view)
+    public function __construct(Request $request, Response $response)
     {
         $this->request = $request;
         $this->response = $response;
-        $this->view = $view;
     }
 
 
@@ -37,7 +36,7 @@ class Router
           $callback = $this->routes[$method][$path] ?? false;
           if ($callback === false) {
               $this->response->setStatusCode(404);
-              return $this->view->renderView('_404');
+              return $this->view->render('_404');
           }
 
           if (is_array($callback)) {

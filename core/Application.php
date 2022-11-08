@@ -1,10 +1,14 @@
 <?php
+
 namespace app\core;
+
 class Application
 {
     public static string $ROOT_DIR;
+    public View $view;
     public Router $router;
     public Request $request;
+    public Database $db;
     public Response $response;
     public static Application $app;
     public Controller $controller;
@@ -13,9 +17,11 @@ class Application
     {
         self::$ROOT_DIR = $rootPath;
         self::$app = $this;
+        $this->view = new View();
         $this->request = new Request();
         $this->response = new Response();
-        $this->router = new Router($this->request, $this->response);
+        $this->router = new Router($this->request, $this->response, $this->view);
+//        $this->db = new Database($config['db']);
     }
 
     public function run()

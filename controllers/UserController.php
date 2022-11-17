@@ -2,47 +2,59 @@
 
 namespace app\controllers;
 
-use app\core\Application;
 use app\core\Controller;
 use app\core\Request;
-use app\core\View;
 use app\models\UserModel;
 
 class UserController extends Controller
 {
-    public function list()
+    /*
+     //TODO: delete()
+    */
+
+    public function show()
     {
-        $this->setLayout('db');
-        return $this->returnView('list');
+        $userModel = new UserModel();
+        $users = $userModel->index();
+        $this->params['users'] = $users;
+        return $this->returnView('users', $this->params);
     }
 
-    public function usersForm(Request $request)
+    public function edit($id)
+    {
+        $userModel = new UserModel();
+        $user = $userModel->edit($id);
+        $this->params['users'] = $user;
+        return $this->returnView('edit', $this->params);
+    }
+
+    public function new()
+    {
+            return $this->returnView('_form');
+    }
+
+    public function create(Request $request)
     {
         $userModel = new UserModel();
         if ($request->isPost()) {
-            $userModel->loadData($request->getBody());
 
-//            echo "<pre>";
-//            var_dump($userModel);
-//            echo "</pre>";
-//            exit;
+            if (!empty($_POST) && !empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['gender']) && !empty($_POST['status'])) {
+                $name = $_POST['name'];
+                $email = $_POST['email'];
+                $gender = $_POST['gender'];
+                $status = $_POST['status'];
 
-            if ($userModel->validate() && $userModel->pass()) {
-                return 'Success';
+                $userModel->create($name, $email, $gender, $status);
             }
-
-            echo "<pre>";
-            var_dump($userModel->errors);
-            echo "</pre>";
-            exit;
-
-            return $this->returnView('usersForm', [
-                'model' => $userModel
-            ]);
         }
-        $this->setLayout('db');
-        return $this->returnView('usersForm', [
-            'model' => $userModel
-        ]);
+
+        return $this->returnView('new', [$userModel]);
+    }
+
+    public function delete($id)
+    {
+        $userModel = new UserModel();
+        $userModel->delete($id);
+        return $this->returnView('users');
     }
 }

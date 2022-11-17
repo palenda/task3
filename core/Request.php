@@ -4,38 +4,26 @@ namespace app\core;
 
 class Request
 {
-    public function getPath()
-    {
-        $path = $_SERVER['REQUEST_URI'] ?? '/';
-        $position = strpos($path, '?');
-        if ($position === false) {
-            return $path;
-        }
-        return substr($path, 0, $position);
-    }
+    public array $routeParams = [];
 
     public function getMethod()
     {
         return strtolower($_SERVER['REQUEST_METHOD']);
     }
 
-    public function getBody()
+    public function getUrl()
     {
-        $body = [];
-        if ($this->getMethod() === 'get') {
-            foreach ($_GET as $key => $value) {
-                $body[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
-            }
+        $path = $_SERVER['REQUEST_URI'];
+        $position = strpos($path, '?');
+        if ($position !== false) {
+            $path = substr($path, 0, $position);
         }
+        return $path;
+    }
 
-        if ($this->getMethod() === 'post') {
-            foreach ($_POST as $key => $value) {
-                $body[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
-            }
-        }
-
-
-        return $body;
+    public function isGet()
+    {
+        return $this->getMethod() === 'get';
     }
 
     public function isPost()
@@ -43,8 +31,29 @@ class Request
         return $this->getMethod() === 'post';
     }
 
-    public function isGet()
+    public function getBody()
     {
-        return $this->getMethod() === 'get';
+        $data = [];
+        if ($this->isGet()) {
+            foreach ($_GET as $key => $value) {
+                $data[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+            }
+        }
+        if ($this->isPost()) {
+            foreach ($_POST as $key => $value) {
+                $data[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * @param $params
+     * @return self
+     */
+    public function setRouteParams($params): Request
+    {
+        $this->routeParams = $params;
+        return $this;
     }
 }

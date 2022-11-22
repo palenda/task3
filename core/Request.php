@@ -4,9 +4,9 @@ namespace app\core;
 
 class Request
 {
-    public array $routeParams = [];
+    private array $routeParams = [];
 
-    public function getMethod()
+    public function getMethod(): string
     {
         return strtolower($_SERVER['REQUEST_METHOD']);
     }
@@ -21,17 +21,17 @@ class Request
         return $path;
     }
 
-    public function isGet()
+    public function isGet(): bool
     {
         return $this->getMethod() === 'get';
     }
 
-    public function isPost()
+    public function isPost(): bool
     {
         return $this->getMethod() === 'post';
     }
 
-    public function getBody()
+    public function getBody(): array
     {
         $data = [];
         if ($this->isGet()) {
@@ -47,13 +47,14 @@ class Request
         return $data;
     }
 
-    /**
-     * @param $params
-     * @return self
-     */
     public function setRouteParams($params): Request
     {
         $this->routeParams = $params;
         return $this;
+    }
+
+    public function getRouteParam($param, $default = null)
+    {
+        return $this->routeParams[$param] ?? $default;
     }
 }

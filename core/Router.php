@@ -7,7 +7,7 @@ class Router
     public View $view;
     private Request $request;
     private Response $response;
-    private array $routeMap = [];
+    protected array $routeMap = [];
 
     public function __construct(Request $request, Response $response)
     {
@@ -25,9 +25,6 @@ class Router
         $this->routeMap['post'][$url] = $callback;
     }
 
-    /**
-     * @return array
-     */
     public function getRouteMap($method): array
     {
         return $this->routeMap[$method] ?? [];
@@ -37,24 +34,16 @@ class Router
     {
         $method = $this->request->getMethod();
         $url = $this->request->getUrl();
-        // Trim slashes
         $url = trim($url, '/');
-
-
         $routes = $this->getRouteMap($method);
 
-        $routeParams = false;
-
-
         foreach ($routes as $route => $callback) {
-            // Trim slashes
             $route = trim($route, '/');
             $routeNames = [];
 
             if (!$route) {
                 continue;
             }
-
 
             if (preg_match_all('/\{(\w+)(:[^}]+)?}/', $route, $matches)) {
                 $routeNames = $matches[1];
@@ -73,12 +62,12 @@ class Router
                 return $callback;
             }
         }
-
         return false;
     }
 
     public function resolve()
     {
+        $view = new View();
         $method = $this->request->getMethod();
         $url = $this->request->getUrl();
         $callback = $this->routeMap[$method][$url] ?? false;
@@ -87,7 +76,7 @@ class Router
 
             if ($callback === false) {
                 $this->response->setStatusCode(404);
-                return $this->view->render('_404');
+                return $view->render('_404');
             }
         }
 
@@ -99,6 +88,6 @@ class Router
             Application::$app->controller = new $callback[0]();
             $callback[0] = new Application::$app->controller();
         }
-        return call_user_func($callback, $this->request);
+          return call_user_func($callback, $this->request, $this->response);
     }
 }

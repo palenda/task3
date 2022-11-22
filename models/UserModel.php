@@ -18,52 +18,34 @@ class UserModel extends Model
         return Database::selectById('users', $id);
     }
 
-    public function new()
+    public function create($name, $email, $gender, $status): array
     {
-        return $_GET['newUser'];
-    }
-
-    public function create($name, $email, $gender, $status): bool
-    {
-        $sql = "INSERT INTO users (`name`, `email`, `gender`, `status`)
-				VALUES (:name, :email, :gender, :status)
-				";
-        $query = $this->db->prepare($sql);
-        $query->bindValue(":name", $name, PDO::PARAM_STR);
-        $query->bindValue(":email", $email, PDO::PARAM_STR);
-        $query->bindValue(":gender", $gender, PDO::PARAM_STR);
-        $query->bindValue(":status", $status, PDO::PARAM_STR);
+        $params = array();
+        $query = Database::insert('users');
+        $query->bindValue(":name", $name);
+        $query->bindValue(":email", $email);
+        $query->bindValue(":gender", $gender);
+        $query->bindValue(":status", $status);
         $query->execute();
-        return true;
+
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            $params[$row['id']] = $row;
+        }
+        return $params;
     }
 
-    public function edit($id)
+    public function edit($id): array
     {
         return Database::selectById('users', $id);
     }
 
-    public function update(): bool
+    public function update($id, $name, $email, $gender, $status): bool
     {
-        $sql = "UPDATE users
-                SET gender = :gender, name = :name, email = :email, status = :status
-                WHERE id = :id    
-                ";
-        $query = $this->db->prepare($sql);
-        $query->bindValue(":name", $_POST['name']);
-        $query->bindValue(":email", $_POST['email']);
-        $query->bindValue(":gender", $_POST['gender']);
-        $query->bindValue(":status", $_POST['status']);
-        $query->bindValue(":id", $_POST['id'], PDO::PARAM_INT);
-        $query->execute();
-        return true;
+        return Database::update('users', $id, $name, $email, $gender, $status);
     }
 
-    public function delete($id): bool
+    public function delete($id)
     {
-        $sql = "DELETE FROM users WHERE id =:id";
-        $query = $this->db->prepare($sql);
-        $query->bindValue(":id", $id, PDO::PARAM_INT);
-        $query->execute();
-        return true;
+        Database::delete('users', $id);
     }
 }

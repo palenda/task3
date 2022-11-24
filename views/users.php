@@ -21,7 +21,7 @@
                 <td><?= $user['gender']; ?></td>
                 <td><?= $user['status']; ?></td>
                 <td>
-                    <a href="/users/<?=$user['id']?>" class="btn btn-outline-dark">
+                    <a href="/users/<?=$user['id']?>" class="btn btn-outline-dark" onclick="return confirm('Really delete?');">
                         Delete
                         <input type="hidden" name="id" value="<?= $user['id']; ?>">
                     </a>

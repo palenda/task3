@@ -2,21 +2,12 @@
 
 namespace app\core;
 
-abstract class Model
+class Model
 {
-    public const RULE_REQUIRED = 'required';
+    protected ?\PDO $db = null;
 
-    public function loadData($data)
+    public function __construct()
     {
-        foreach ($data as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->{$key} = $value;
-            }
-        }
-    }
-
-    public function validate()
-    {
-
+        $this->db = Database::getConnection();
     }
 }

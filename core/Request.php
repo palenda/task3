@@ -31,6 +31,7 @@ class Request
         return $this->getMethod() === 'post';
     }
 
+
     public function getBody(): array
     {
         $data = [];

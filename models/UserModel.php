@@ -8,7 +8,7 @@ use PDO;
 
 class UserModel extends Model
 {
-    public function index(): array
+    public function getAll(): array
     {
         return Database::limitSelect('users');
     }
@@ -26,7 +26,14 @@ class UserModel extends Model
     public function create($name, $email, $gender, $status): array
     {
         $params = array();
-        $query = Database::insert('users');
+        $values = [
+            'name' => ':name',
+            'email' => ':email',
+            'gender' => ':gender',
+            'status' => ':status',
+        ];
+        $query = Database::insert('users', "`name`, `email`, `gender`, `status`",
+            $values['name'].", ".$values['email'].", ".$values['gender'].", ".$values['status']);
         $query->bindValue(":name", $name);
         $query->bindValue(":email", $email);
         $query->bindValue(":gender", $gender);
@@ -39,14 +46,28 @@ class UserModel extends Model
         return $params;
     }
 
-    public function edit($id): array
+    public function get($id): array
     {
         return Database::selectById('users', $id);
     }
 
     public function update($id, $name, $email, $gender, $status): bool
     {
-        return Database::update('users', $id, $name, $email, $gender, $status);
+        $data = [
+            'name' => $name,
+            'email' => $email,
+            'gender' => $gender,
+            'status' => $status,
+            'id' => $id
+        ];
+        $query = Database::update('users',
+            'name = :name, email = :email, gender = :gender, status = :status');
+        $query->bindValue(":name", $data['name']);
+        $query->bindValue(":email", $data['email']);
+        $query->bindValue(":gender", $data['gender']);
+        $query->bindValue(":status", $data['status']);
+        $query->bindValue(":id", $data['id'], PDO::PARAM_INT);
+        return $query->execute();
     }
 
     public function delete($id)

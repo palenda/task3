@@ -11,7 +11,7 @@ class UserController extends Controller
     public function show()
     {
         $userModel = new UserModel();
-        $users = $userModel->index();
+        $users = $userModel->getAll();
         $count = $userModel->count();
         $this->params['users'] = $users;
         $this->params['count'] = $count;
@@ -19,11 +19,11 @@ class UserController extends Controller
         return $this->returnView('users', $this->params);
     }
 
-    public function edit(Request $request)
+    public function get(Request $request)
     {
         $userModel = new UserModel();
         $id = $request->getRouteParam('id');
-        $user = $userModel->edit($id);
+        $user = $userModel->get($id);
         $this->params['user'] = $user;
         return $this->returnView('edit', $this->params);
     }
@@ -36,36 +36,18 @@ class UserController extends Controller
     public function create(Request $request)
     {
         $userModel = new UserModel();
-        if ($request->isPost()) {
-            if (!empty($_POST) && !empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['gender']) && !empty($_POST['status'])) {
-                $name = $_POST['name'];
-                $email = $_POST['email'];
-                $gender = $_POST['gender'];
-                $status = $_POST['status'];
-
-                $userModel->create($name, $email, $gender, $status);
-                $this->params['user'] = $userModel;
-            }
-        }
-
+        $data = $request->getBody();
+        $userModel->create($data['name'], $data['email'], $data['gender'], $data['status']);
+        $this->params['user'] = $userModel;
         return $this->returnView('new', $this->params);
     }
 
     public function update(Request $request)
     {
         $userModel = new UserModel();
-        if ($request->isPost()) {
-            if (!empty($_POST) && !empty($_POST['name']) && !empty($_POST['email']) && !empty($_POST['gender']) && !empty($_POST['status'])) {
-                $id = $_POST['id'];
-                $name = $_POST['name'];
-                $email = $_POST['email'];
-                $gender = $_POST['gender'];
-                $status = $_POST['status'];
-                $userModel->update($id, $name, $email, $gender, $status);
-                $this->params['user'] = $userModel;
-            }
-        }
-
+        $data = $request->getBody();
+        $userModel->update($data['id'], $data['name'], $data['email'], $data['gender'], $data['status']);
+        $this->params['user'] = $userModel;
         return $this->returnView('update', $this->params);
     }
 
@@ -79,7 +61,7 @@ class UserController extends Controller
                 }
             }
         }
-        $users = $userModel->index();
+        $users = $userModel->getAll();
         $count = $userModel->count();
         $this->params['users'] = $users;
         $this->params['count'] = $count;
@@ -90,7 +72,7 @@ class UserController extends Controller
     {
         $id = $request->getRouteParam('id');
         $userModel = new UserModel();
-        $users = $userModel->index();
+        $users = $userModel->getAll();
         $count = $userModel->count();
         $this->params['users'] = $users;
         $this->params['count'] = $count;

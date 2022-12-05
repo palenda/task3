@@ -1,6 +1,7 @@
 <?php
 
 namespace app\core;
+use app\config\DatabaseConnection;
 use PDO;
 
 abstract class Database
@@ -10,7 +11,7 @@ abstract class Database
         return DatabaseConnection::getInstance();
     }
 
-    public static function select($table)
+    public static function select($table): int
     {
         $sql = "SELECT * FROM $table";
         $db = self::getConnection();
@@ -62,29 +63,22 @@ abstract class Database
         $query->execute();
     }
 
-    public static function insert($table)
+    public static function insert($table, $data, $values)
     {
-        $sql = "INSERT INTO $table (`name`, `email`, `gender`, `status`)
-				VALUES (:name, :email, :gender, :status)
+        $sql = "INSERT INTO $table ($data)
+				VALUES ($values)
 				";
         $db = self::getConnection();
         return $db->prepare($sql);
     }
 
-    public static function update($table, $id, $name, $email, $gender, $status): bool
+    public static function update($table, $set)
     {
         $sql = "UPDATE $table
-                SET name = :name, email = :email, gender = :gender, status = :status
+                SET $set
                 WHERE id = :id    
                 ";
         $db = self::getConnection();
-        $query = $db->prepare($sql);
-        $query->bindValue(":name", $name);
-        $query->bindValue(":email", $email);
-        $query->bindValue(":gender", $gender);
-        $query->bindValue(":status", $status);
-        $query->bindValue(":id", $id, PDO::PARAM_INT);
-        $query->execute();
-        return true;
+        return $db->prepare($sql);
     }
 }

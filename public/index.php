@@ -1,14 +1,8 @@
 <?php
-
-use app\controllers\UserController;
 use app\core\Application;
 
 require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../config/routes.php';
 
-$app = new Application(dirname(__DIR__));
+Application::$app->run();
 
-$app->router->get('/', [UserController::class, 'list']);
-$app->router->get('/usersForm', [UserController::class, 'usersForm']);
-$app->router->post('/usersForm', [UserController::class, 'usersForm']);
-
-$app->run();

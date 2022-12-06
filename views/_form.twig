@@ -1,5 +1,5 @@
-<?php include_once "layouts/header.php" ?>
-<?php include_once "layouts/footer.php" ?>
+{% extends "layouts/base.twig" %}
+{% block body %}
 <form name="myForm" action="/users/create" method="post" onsubmit="return validate();">
     <h1>Your form</h1>
     <div class="form-group">
@@ -24,5 +24,6 @@
     </div>
     <button type="submit" class="btn btn-light">Add user</button>
 </form>
+{% endblock body %}
 
 

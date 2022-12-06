@@ -1,0 +1,41 @@
+{% extends "layouts/base.twig" %}
+{% block body %}
+<link rel="stylesheet" href="../../assets/css/style.css">
+<script type="text/javascript" src="../../assets/js/validate.js"></script>
+<form name="myForm" action="/users/update" method="post" onsubmit="return validate();">
+    <div>
+        <h1>Edit user</h1>
+    </div>
+    {% for user in users %}
+        <div class="form-group">
+            <label>First name and last name</label>
+            <input type="hidden" name="id" value="{{ user.id }}">
+            <input type="text" name = "name" value="{{ user.name }}" class="form-control input" placeholder="Enter your name and surname">
+        </div>
+            <div class="mb-3">
+                <label>Email</label>
+                <input type="email" name = "email" value="{{ user.email }}" class="form-control input" placeholder="Enter your email">
+            </div>
+        <select class="input" name="gender">
+            {% if user.gender == "Female" %}
+                <option selected>{{ user.gender }}</option>
+                <option>Male</option>
+            {% else %}
+                <option selected>{{ user.gender }}</option>
+                <option>Female</option>
+            {% endif %}
+        </select><br><br>
+            <select class="input" name="status">
+                {% if user.status == "Active" %}
+                    <option selected>{{ user.status }}</option>
+                    <option>Inactive</option>
+                {% else %}
+                    <option selected>{{ user.status }}</option>
+                    <option>Active</option>
+                {% endif %}
+            </select><br><br>
+            <button type="submit" class="btn btn-light">Update user</button>
+        {% endfor %}
+</form>
+{% endblock body %}
+

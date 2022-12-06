@@ -53,20 +53,9 @@ class UserModel extends Model
 
     public function update($id, $name, $email, $gender, $status): bool
     {
-        $data = [
-            'name' => $name,
-            'email' => $email,
-            'gender' => $gender,
-            'status' => $status,
-            'id' => $id
-        ];
         $query = Database::update('users',
-            'name = :name, email = :email, gender = :gender, status = :status');
-        $query->bindValue(":name", $data['name']);
-        $query->bindValue(":email", $data['email']);
-        $query->bindValue(":gender", $data['gender']);
-        $query->bindValue(":status", $data['status']);
-        $query->bindValue(":id", $data['id'], PDO::PARAM_INT);
+            "name = '".$name."', email = '".$email."', gender = '".$gender."', status = '".$status."'");
+        $query->bindValue(":id", $id, PDO::PARAM_INT);
         return $query->execute();
     }
 

@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\core\Controller;
 use app\core\Request;
+use app\core\Twig;
 use app\models\UserModel;
 
 class UserController extends Controller
@@ -16,7 +17,12 @@ class UserController extends Controller
         $this->params['users'] = $users;
         $this->params['count'] = $count;
         $this->params['pages'] = ceil($this->params['count'] / 10);
-        return $this->returnView('users', $this->params);
+        return Twig::make('users', [
+            'users' => $this->params['users'],
+            'count' => $this->params['count'],
+            'pages' => $this->params['pages'],
+            'page' => $_GET['page']
+        ]);
     }
 
     public function get(Request $request)
@@ -24,13 +30,14 @@ class UserController extends Controller
         $userModel = new UserModel();
         $id = $request->getRouteParam('id');
         $user = $userModel->get($id);
-        $this->params['user'] = $user;
-        return $this->returnView('edit', $this->params);
+        return Twig::make('edit', [
+            'users' => $user,
+        ]);
     }
 
     public function new()
     {
-        return $this->returnView('_form');
+        return Twig::make('_form');
     }
 
     public function create(Request $request)
@@ -38,8 +45,9 @@ class UserController extends Controller
         $userModel = new UserModel();
         $data = $request->getBody();
         $userModel->create($data['name'], $data['email'], $data['gender'], $data['status']);
-        $this->params['user'] = $userModel;
-        return $this->returnView('new', $this->params);
+        return Twig::make('new', [
+            'user' => $data
+        ]);
     }
 
     public function update(Request $request)
@@ -47,8 +55,9 @@ class UserController extends Controller
         $userModel = new UserModel();
         $data = $request->getBody();
         $userModel->update($data['id'], $data['name'], $data['email'], $data['gender'], $data['status']);
-        $this->params['user'] = $userModel;
-        return $this->returnView('update', $this->params);
+        return Twig::make('update', [
+            'user' => $data
+        ]);
     }
 
     public function deleteChecked(Request $request)
@@ -61,22 +70,14 @@ class UserController extends Controller
                 }
             }
         }
-        $users = $userModel->getAll();
-        $count = $userModel->count();
-        $this->params['users'] = $users;
-        $this->params['count'] = $count;
-        return $this->returnView('users', $this->params);
+        return $this->show();
     }
 
     public function delete(Request $request)
     {
         $id = $request->getRouteParam('id');
         $userModel = new UserModel();
-        $users = $userModel->getAll();
-        $count = $userModel->count();
-        $this->params['users'] = $users;
-        $this->params['count'] = $count;
         $userModel->delete($id);
-        return $this->returnView('users', $this->params);
+        return $this->show();
     }
 }

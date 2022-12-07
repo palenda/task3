@@ -4,7 +4,6 @@ namespace app\core;
 
 class Router
 {
-    public View $view;
     private Request $request;
     private Response $response;
     protected array $routeMap = [];

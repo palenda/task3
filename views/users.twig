@@ -1,7 +1,6 @@
 {% extends "layouts/base.twig" %}
 {% block body %}
     <h1>Database:</h1>
-    <form action="/users" method="post">
         <input type="submit" class="btn btn-dark" value="Delete selected" onclick="return confirm('Delete this?');">
         <br><br>
         <div class="table-responsive-sm">
@@ -31,11 +30,9 @@
                         <td>
                             <a href="/users/{{ user.id }}" class="btn btn-outline-dark" onclick="return confirm('Delete this?');">
                                 Delete
-                                <input type="hidden" name="id" value="{{ user.id }}">
                             </a>
                             <a href="/users/edit/{{ user.id }}" class="btn btn-outline-dark">
                                 Edit
-                                <input type="hidden" name="id" value="{{ user.id }}">
                             </a>
                         </td>
                     </tr>
@@ -43,7 +40,6 @@
                 </tbody>
             </table>
         </div>
-    </form>
     <div class="container my-5">
         <nav>
             <ul class="pagination justify-content-center">

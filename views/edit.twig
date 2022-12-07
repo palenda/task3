@@ -6,7 +6,6 @@
     <div>
         <h1>Edit user</h1>
     </div>
-    {% for user in users %}
         <div class="form-group">
             <label>First name and last name</label>
             <input type="hidden" name="id" value="{{ user.id }}">
@@ -17,7 +16,7 @@
                 <input type="email" name = "email" value="{{ user.email }}" class="form-control input" placeholder="Enter your email">
             </div>
         <select class="input" name="gender">
-            {% if user.gender === "Female" %}
+            {% if user.gender == "Female" %}
                 <option selected>{{ user.gender }}</option>
                 <option>Male</option>
             {% else %}
@@ -26,7 +25,7 @@
             {% endif %}
         </select><br><br>
             <select class="input" name="status">
-                {% if user.status === "Active" %}
+                {% if user.status == "Active" %}
                     <option selected>{{ user.status }}</option>
                     <option>Inactive</option>
                 {% else %}
@@ -35,7 +34,6 @@
                 {% endif %}
             </select><br><br>
             <button type="submit" class="btn btn-light">Update user</button>
-        {% endfor %}
 </form>
 {% endblock body %}
 

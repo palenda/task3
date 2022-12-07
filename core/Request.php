@@ -41,9 +41,7 @@ class Request
         }
         if ($this->isPost()) {
             foreach ($_POST as $key => $value) {
-                if (!empty($value[$key])) {
                     $data[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
-                } else echo "Field is required";
             }
         }
         return $data;

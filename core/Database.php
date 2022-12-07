@@ -45,13 +45,9 @@ abstract class Database
         $sql = "SELECT * FROM $table WHERE id =:id";
         $db = self::getConnection();
         $query = $db->prepare($sql);
-        $params = array();
         $query->bindValue(":id", $id, PDO::PARAM_INT);
         $query->execute();
-        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
-            $params[$row['id']] = $row;
-        }
-        return $params;
+        return $query->fetch(PDO::FETCH_ASSOC);
     }
 
     public static function delete($table, $id)
